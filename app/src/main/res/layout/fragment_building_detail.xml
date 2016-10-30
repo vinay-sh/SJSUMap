@@ -1,32 +1,49 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.vinay.sjsu_map.BuildingDetailFragment">
+    tools:context="com.example.vinay.sjsu_map.BuildingDetailActivity">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <ImageView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Name" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Address" />
+        android:layout_height="200dp"
+        android:id="@+id/buildingImage"
+        android:scaleType="fitXY"/>
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Image" />
+        android:layout_height="wrap_content"
+        android:id="@+id/buildingAddress"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:text="Address"
+        android:layout_below="@+id/buildingImage"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="15dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="62dp" />
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="wrap_content"
+        android:id="@+id/distanceToBuilding"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:text="Distance"
+        android:layout_below="@+id/buildingAddress"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="62dp" />
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
-</FrameLayout>
+        android:layout_height="wrap_content"
+        android:text="Time taken"
+        android:id="@+id/timeTaken"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:layout_below="@+id/distanceToBuilding"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="62dp" />
+
+
+</RelativeLayout>

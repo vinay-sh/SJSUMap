@@ -20,7 +20,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".BuildingDetailActivity"></activity>
+        <activity
+            android:name=".BuildingDetailActivity"
+            android:theme="@style/AppTheme"
+            android:configChanges="orientation|keyboardHidden" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.vinay.sjsu_map.BuildingDetailActivity" />
+        </activity>
+
     </application>
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />

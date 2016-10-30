@@ -1,15 +1,25 @@
 package com.example.vinay.sjsu_map;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ListIterator;
 
 
 /**
@@ -23,6 +33,7 @@ import android.widget.ImageView;
 public class MapViewFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    private List<Building> buildingList;
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private View v;
@@ -64,13 +75,25 @@ public class MapViewFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        System.out.println("I AM INSIDE CREATE MAP VIEW FRAGMENT");
+        setHasOptionsMenu(true);
+        buildingList = new ArrayList<Building>() {
+            {
+                add(new Building("King Library", "kinglibrary", "Dr. Martin Luther King, Jr. Library, 150 East San Fernando Street, San Jose, CA 95112", "KING", -959));
+                add(new Building("Engineering Building", "engg", "San Jose State University Charles W. Davidson College of Engineering, 1 Washington Square, San Jose, CA 95112", "EB",-49133));
+                add(new Building("Yoshihiro Uchida Hall", "yuh", "Yoshihiro Uchida Hall, San Jose, CA 95112", "YUH", -4641443));
+                add(new Building("Student Union", "su", "Student Union Building, San Jose, CA 95112", "SU", -6739523));
+                add(new Building("BBC", "bbc", "Boccardo Business Complex, San Jose, CA 95112", "BBC", -11722061));
+                add(new Building("South Parking Garage", "spg", "San Jose State University South Garage, 330 South 7th Street, San Jose, CA 95112", "SPG", -38400));
+            }
+        };
 
         System.out.println("Value of X is "+calculateX(-121.8817131));
         System.out.println("Value of Y is "+calculateY(37.3367211));
 
         //CalculatingDistance cd = new CalculatingDistance();
        // cd.SendRequest(37.3367211, 37.3367211, 37.3367211, 37.3367211);
-        new AsyncTaskGoogleMapAPI().execute(37.3367211, -121.8817131,37.3367311, -121.8817431);
+       // new AsyncTaskGoogleMapAPI().execute(37.3367211, -121.8817131,37.3367311, -121.8817431);
 
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
@@ -89,8 +112,26 @@ public class MapViewFragment extends Fragment {
                 final int xpos = (int) event.getX();
                 final int ypos = (int) event.getY();
 
-                //System.out.println("The value is " +getHotspotColor(xpos,ypos));
+                int colorInt = getHotspotColor(xpos,ypos);
+                System.out.println("The value is " +colorInt);
                 System.out.println("The value is "+xpos+","+ypos);
+
+                ListIterator<Building> iterator= buildingList.listIterator();
+
+
+                while(iterator.hasNext()){
+                    Building currBuilding = (Building)iterator.next();
+                    if(colorInt == currBuilding.getColor()){
+                        Intent detailActivityIntent = new Intent(getActivity(), BuildingDetailActivity.class);
+                        detailActivityIntent.putExtra(BuildingDetailFragment.NAME, currBuilding.getName());
+                        detailActivityIntent.putExtra(BuildingDetailFragment.ADDRESS, currBuilding.getAddress());
+                        detailActivityIntent.putExtra(BuildingDetailFragment.DISTANCE, 10);
+                        detailActivityIntent.putExtra(BuildingDetailFragment.TIMENEEDED, 2);
+                        detailActivityIntent.putExtra(BuildingDetailFragment.IMAGE, currBuilding.getImage());
+                        startActivity(detailActivityIntent);
+                        break;
+                    }
+                }
 
                 return true;
             }
@@ -149,4 +190,46 @@ public class MapViewFragment extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_search, menu);
+        super.onCreateOptionsMenu(menu,inflater);
+
+        MenuItem searchItem = menu.findItem(R.id.search);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener(){
+                                              @Override
+                                              public boolean onQueryTextChange(String newText){
+                                                  System.out.println("inside text change"+newText);
+                                                  return true;
+                                              }
+
+                                              @Override
+                                              public boolean onQueryTextSubmit(String query){
+                                                  System.out.println("inside on text submit"+query);
+                                                  System.out.println("buildingList size"+buildingList.size());
+
+                                                  ListIterator<Building> iterator= buildingList.listIterator();
+
+
+                                                  while(iterator.hasNext()){
+                                                      Building currBuilding = (Building)iterator.next();
+                                                      if( query.equalsIgnoreCase(currBuilding.getName())){
+                                                          System.out.println("The search matches"+currBuilding.getName());
+                                                      }
+                                                  }
+
+
+                                                  return true;
+
+
+                                              }
+                                          }
+
+        );
+
+        //return true;
+    }
+
 }

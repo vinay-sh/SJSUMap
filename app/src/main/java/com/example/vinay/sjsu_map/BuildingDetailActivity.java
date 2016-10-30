@@ -9,13 +9,14 @@ public class BuildingDetailActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        System.out.println("Inside BuildingDetailActivity");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_building_detail);
         FragmentManager fm = getSupportFragmentManager();
         Fragment fragment = fm.findFragmentById(R.id.buildingDetailsFragmentContainer);
 
         if (fragment == null) {
-            fragment = new MapViewFragment();
+            fragment = new BuildingDetailFragment();
             fm.beginTransaction()
                     .add(R.id.buildingDetailsFragmentContainer, fragment)
                     .commit();

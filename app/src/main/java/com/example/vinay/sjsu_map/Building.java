@@ -12,12 +12,14 @@ public class Building {
     private String address;
     private String image;
     private String abbreviation;
+    private int color;
 
-    public Building(String name, String image, String address, String abbreviation){
-        name = name;
-        image = image;
-        address = address;
-        abbreviation = abbreviation;
+    public Building(String name, String image, String address, String abbreviation, int color){
+        this.name = name;
+        this.image = image;
+        this.address = address;
+        this.abbreviation = abbreviation;
+        this.color = color;
     }
     public String getName() {
         return name;
@@ -51,5 +53,11 @@ public class Building {
         this.abbreviation = abbreviation;
     }
 
+    public int getColor() {
+        return color;
+    }
 
+    public void setColor(int color) {
+        this.color = color;
+    }
 }
