@@ -12,6 +12,10 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+        <meta-data
+            android:name="com.google.android.maps.v2.API_KEY"
+            android:value="AIzaSyC_ve8XnnHKgKh_bdVsK1foxA2MWMezmY8"
+            />
 
         <activity android:name=".MapViewActivity">
             <intent-filter>
@@ -29,6 +33,7 @@
                 android:value="com.example.vinay.sjsu_map.BuildingDetailActivity" />
         </activity>
 
+        <activity android:name=".StreetViewActivity"></activity>
     </application>
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
