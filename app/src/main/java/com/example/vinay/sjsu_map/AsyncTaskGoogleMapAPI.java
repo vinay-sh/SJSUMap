@@ -1,12 +1,15 @@
 package com.example.vinay.sjsu_map;
 
 import android.os.AsyncTask;
+import android.support.v4.widget.TextViewCompat;
+import android.widget.TextView;
 
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStreamReader;
+import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -25,13 +28,21 @@ import javax.xml.transform.Result;
  * Created by Vinay on 10/28/2016.
  */
 
-public class AsyncTaskGoogleMapAPI extends AsyncTask<Double, Void, Void> {
+public class AsyncTaskGoogleMapAPI extends AsyncTask<Double, TextView, Void> {
 //    protected void onPreExecute(){
 //        super.onPreExecute();
 //    }
 //double originLat, double originLon, double destinatinLat, double destinationLon
-
     private static final String API_KEY = "AIzaSyC_ve8XnnHKgKh_bdVsK1foxA2MWMezmY8";
+    private final WeakReference<TextView> timeref;
+    private final WeakReference<TextView> distanceref;
+    String distance, time;
+
+    public AsyncTaskGoogleMapAPI(TextView a, TextView b){
+        timeref = new WeakReference<TextView>(a);
+        distanceref = new WeakReference<TextView>(b);
+
+    }
 
     @Override
     protected Void doInBackground(Double... params){
@@ -70,7 +81,6 @@ public class AsyncTaskGoogleMapAPI extends AsyncTask<Double, Void, Void> {
             //Parsing JSON response
             Gson gsonObj = new Gson();
 
-            String distance, time;
             JsonElement jelement = new JsonParser().parse(response.toString());
             JsonObject distanceObj, timeObj;
             JsonObject jobject = jelement.getAsJsonObject();
@@ -96,4 +106,20 @@ public class AsyncTaskGoogleMapAPI extends AsyncTask<Double, Void, Void> {
 
         return null;
     }
+
+    @Override
+    protected void onPostExecute(Void result){
+        super.onPostExecute(result);
+
+        final TextView t = timeref.get();
+        final TextView dist = distanceref.get();
+        if(time!=null){
+            t.setText(time);
+        }
+        if(dist!=null){
+            dist.setText(distance);
+        }
+
+    }
+
 }

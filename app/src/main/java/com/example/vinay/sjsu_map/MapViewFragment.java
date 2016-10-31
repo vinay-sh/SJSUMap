@@ -1,11 +1,17 @@
 package com.example.vinay.sjsu_map;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
@@ -16,6 +22,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,8 +38,11 @@ public class MapViewFragment extends Fragment {
     private int image_width = 1070;
     private int image_height = 850;
     private View v;
+    private static double ulatitude=0;
+    private static double ulongitude=0;
+    private ResponseReceiver receiver;
 
-   // private OnFragmentInteractionListener mListener;
+    // private OnFragmentInteractionListener mListener;
 
     public MapViewFragment() {
         // Required empty public constructor
@@ -50,19 +60,23 @@ public class MapViewFragment extends Fragment {
         setHasOptionsMenu(true);
         buildingList = new ArrayList<Building>() {
             {
-                add(new Building("King Library", "kinglibrary", "Dr. Martin Luther King, Jr. Library, 150 East San Fernando Street, San Jose, CA 95112", "KING", -959));
-                add(new Building("Engineering Building", "engg", "San Jose State University Charles W. Davidson College of Engineering, 1 Washington Square, San Jose, CA 95112", "EB",-49133));
-                add(new Building("Yoshihiro Uchida Hall", "yuh", "Yoshihiro Uchida Hall, San Jose, CA 95112", "YUH", -4641443));
-                add(new Building("Student Union", "su", "Student Union Building, San Jose, CA 95112", "SU", -6739523));
-                add(new Building("BBC", "bbc", "Boccardo Business Complex, San Jose, CA 95112", "BBC", -11722061));
-                add(new Building("South Parking Garage", "spg", "San Jose State University South Garage, 330 South 7th Street, San Jose, CA 95112", "SPG", -38400));
+                add(new Building("King Library", "kinglibrary", "Dr. Martin Luther King, Jr. Library, 150 East San Fernando Street, San Jose, CA 95112", "KING", -959, 37.3339968, -121.9038523));
+                add(new Building("Engineering Building", "engg", "San Jose State University Charles W. Davidson College of Engineering, 1 Washington Square, San Jose, CA 95112", "EB",-49133, 37.3367016, -121.8834582));
+                add(new Building("Yoshihiro Uchida Hall", "yuh", "Yoshihiro Uchida Hall, San Jose, CA 95112", "YUH", -4641443, 37.3355344, -121.8873859));
+                add(new Building("Student Union", "su", "Student Union Building, San Jose, CA 95112", "SU", -6739523, 37.3367016, -121.8834582));
+                add(new Building("BBC", "bbc", "Boccardo Business Complex, San Jose, CA 95112", "BBC", -11722061, 37.3359085, -121.8803279));
+                add(new Building("South Parking Garage", "spg", "San Jose State University South Garage, 330 South 7th Street, San Jose, CA 95112", "SPG", -38400, 37.3333866, -121.8808004));
             }
         };
 
-        //CalculatingDistance cd = new CalculatingDistance();
-        // cd.SendRequest(37.3367211, 37.3367211, 37.3367211, 37.3367211);
+        IntentFilter filter = new IntentFilter(ResponseReceiver.PROCESS_RESPONSE);
+        filter.addCategory(Intent.CATEGORY_DEFAULT);
+        receiver = new ResponseReceiver();
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(receiver,filter);
 
-        // new AsyncTaskGoogleMapAPI().execute(37.3367211, -121.8817131,37.3367311, -121.8817431);
+
+        getCurrentUserLocation();
+
 
         // Inflate the layout for this fragment
         v = inflater.inflate(R.layout.fragment_map_view, container, false);
@@ -76,6 +90,9 @@ public class MapViewFragment extends Fragment {
                 System.out.println("The value is " +colorInt);
                 System.out.println("The value is "+xpos+","+ypos);
 
+                getCurrentUserLocation();
+                System.out.println("*****Current user latitude and longitude is "+ulatitude+" & "+ulongitude);
+
                 ListIterator<Building> iterator= buildingList.listIterator();
 
 
@@ -85,8 +102,10 @@ public class MapViewFragment extends Fragment {
                         Intent detailActivityIntent = new Intent(getActivity(), BuildingDetailActivity.class);
                         detailActivityIntent.putExtra(BuildingDetailFragment.NAME, currBuilding.getName());
                         detailActivityIntent.putExtra(BuildingDetailFragment.ADDRESS, currBuilding.getAddress());
-                        detailActivityIntent.putExtra(BuildingDetailFragment.DISTANCE, 10);
-                        detailActivityIntent.putExtra(BuildingDetailFragment.TIMENEEDED, 2);
+                        detailActivityIntent.putExtra(BuildingDetailFragment.B_LATITUDE, currBuilding.getLatitude());
+                        detailActivityIntent.putExtra(BuildingDetailFragment.B_LONGITUDE, currBuilding.getLongitude());
+                        detailActivityIntent.putExtra(BuildingDetailFragment.U_LATITUDE, ulatitude);
+                        detailActivityIntent.putExtra(BuildingDetailFragment.U_LONGITUDE, ulongitude);
                         detailActivityIntent.putExtra(BuildingDetailFragment.IMAGE, currBuilding.getImage());
                         startActivity(detailActivityIntent);
                         break;
@@ -100,43 +119,8 @@ public class MapViewFragment extends Fragment {
 ////                System.out.println("Value of X is "+calculateX(-121.8817131));
 ////                System.out.println("Value of Y is "+calculateY(37.3367211));
 //
-//                //new AsyncTaskGoogleMapAPI().execute(37.3367211, -121.8817131,37.3367311, -121.8817431);
-//
 //                String abc = "null";
 //                int flag=0;
-//
-//                switch(pointClicked){
-//                    case -959:
-//                        abc="King Library";
-//                        flag=1;
-//                        break;
-//                    case -49133:
-//                        abc="Engineering Building";
-//                        flag=1;
-//                        break;
-//                    case -4641443:
-//                        abc="Yoshihiro Uchida Hall";
-//                        flag=1;
-//                        break;
-//                    case -6739523:
-//                        abc="Student Union";
-//                        flag=1;
-//                        break;
-//                    case -11722061:
-//                        abc="BBC";
-//                        flag=1;
-//                        break;
-//                    case -38400:
-//                        abc="South Parking Garage";
-//                        flag=1;
-//                        break;
-//
-//                }
-//
-//                if(flag==1) {
-//                    Intent intent = new Intent(getActivity(), BuildingDetailActivity.class);
-//                    startActivity(intent);
-//>>>>>>> Stashed changes
                 }
 
                 return true;
@@ -146,7 +130,6 @@ public class MapViewFragment extends Fragment {
 
         return v;
     }
-
 
     public int getHotspotColor ( int x, int y) {
         ImageView img = (ImageView) v.findViewById(R.id.image_areas);
@@ -176,34 +159,66 @@ public class MapViewFragment extends Fragment {
         MenuItem searchItem = menu.findItem(R.id.search);
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener(){
-                                              @Override
-                                              public boolean onQueryTextChange(String newText){
-                                                  System.out.println("inside text change"+newText);
-                                                  return true;
-                                              }
+            @Override
+            public boolean onQueryTextChange(String newText){
+                System.out.println("inside text change"+newText);
+                return true;
+                }
 
-                                              @Override
-                                              public boolean onQueryTextSubmit(String query){
-                                                  System.out.println("inside on text submit"+query);
-                                                  System.out.println("buildingList size"+buildingList.size());
-
-                                                  ListIterator<Building> iterator= buildingList.listIterator();
-
-
-                                                  while(iterator.hasNext()){
-                                                      Building currBuilding = (Building)iterator.next();
-                                                      if( query.equalsIgnoreCase(currBuilding.getName())){
-                                                          System.out.println("The search matches"+currBuilding.getName());
-                                                      }
-                                                  }
-
-
-                                                  return true;
-
-
-                                              }
-                                          }
-
+            @Override
+            public boolean onQueryTextSubmit(String query){
+                System.out.println("inside on text submit"+query);
+                System.out.println("buildingList size"+buildingList.size());
+                ListIterator<Building> iterator= buildingList.listIterator();
+                while(iterator.hasNext()){
+                    Building currBuilding = (Building)iterator.next();
+                    if( query.equalsIgnoreCase(currBuilding.getName())){
+                        System.out.println("The search matches"+currBuilding.getName());
+                    }
+                }
+                return true;
+            }
+        }
         );
     }
+
+        public void getCurrentUserLocation() {
+
+            Intent mServiceIntent = new Intent(getActivity(), GetLocationService.class);
+            getActivity().startService(mServiceIntent);
+
+        }
+
+
+    @Override
+    public void onDestroy(){
+        getContext().unregisterReceiver(receiver);
+        super.onDestroy();
+
+    }
+
+    public void setLatLng(double lat, double lng){
+        ulatitude = lat;
+        ulongitude = lng;
+        System.out.println("**********VINAY Updated user latitude and longitude is "+ulatitude+" & "+ulongitude);
+    }
+}
+
+
+class ResponseReceiver extends BroadcastReceiver{
+
+    public static final String PROCESS_RESPONSE = "com.example.vinay.sjsu_map.PROCESS_RESPONSE";
+
+    @Override
+    public void onReceive(Context context, Intent intent){
+
+        double latitude = intent.getDoubleExtra(GetLocationService.LATITUDE, 1.00);
+        double longitude = intent.getDoubleExtra(GetLocationService.LONGITUDE, 1.00);
+        System.out.println("**********VINAY Intent response()  "+latitude+" , "+longitude);
+
+        MapViewFragment mvf = new MapViewFragment();
+        mvf.setLatLng(latitude, longitude);
+
+    }
+
 }

@@ -13,13 +13,17 @@ public class Building {
     private String image;
     private String abbreviation;
     private int color;
+    private double latitude;
+    private double longitude;
 
-    public Building(String name, String image, String address, String abbreviation, int color){
+    public Building(String name, String image, String address, String abbreviation, int color, double latitude, double longitude){
         this.name = name;
         this.image = image;
         this.address = address;
         this.abbreviation = abbreviation;
         this.color = color;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
     public String getName() {
         return name;
@@ -59,5 +63,21 @@ public class Building {
 
     public void setColor(int color) {
         this.color = color;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 }
