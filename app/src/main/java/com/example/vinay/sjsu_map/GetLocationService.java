@@ -23,7 +23,7 @@ public class GetLocationService extends IntentService implements GoogleApiClient
     public static final String BROADCAST_ACTION = "com.example.vinay.sjsu_map.BROADCAST";
     public static final String LATITUDE = "com.example.vinay.sjsu_map.LATITUDE";
     public static final String LONGITUDE = "com.example.vinay.sjsu_map.LONGITUDE";
-    private static final String TAG = CalculatingDistance.class.getSimpleName();
+    private static final String TAG = GetLocationService.class.getSimpleName();
     private GoogleApiClient mGoogleApiClient;
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 1000;
     private Location mLastLocation;
