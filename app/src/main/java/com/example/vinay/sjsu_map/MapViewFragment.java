@@ -89,8 +89,8 @@ public class MapViewFragment extends Fragment {
         // Inflate the layout for this fragment
         v = inflater.inflate(R.layout.fragment_map_view, container, false);
 
-       RelativeLayout relativeLayout = (RelativeLayout) v.findViewById(R.id.mapView);
-        relativeLayout.addView(new UserLocation(getActivity(),300,500));
+       //RelativeLayout relativeLayout = (RelativeLayout) v.findViewById(R.id.mapView);
+       // relativeLayout.addView(new UserLocation(getActivity(),300,500));
 
         v.setOnTouchListener(new View.OnTouchListener(){
             public boolean onTouch(View v, MotionEvent event){
@@ -186,6 +186,8 @@ public class MapViewFragment extends Fragment {
                     Building currBuilding = (Building)iterator.next();
                     if( query.equalsIgnoreCase(currBuilding.getName())){
                         System.out.println("The search matches"+currBuilding.getName());
+                        RelativeLayout relativeLayout = (RelativeLayout) v.findViewById(R.id.mapView);
+                        relativeLayout.addView(new UserLocation(getActivity(),calculateX(currBuilding.getLongitude()),calculateY(currBuilding.getLatitude())));
                     }
                 }
                 return true;
@@ -237,13 +239,13 @@ class ResponseReceiver extends BroadcastReceiver{
 
 class UserLocation extends View{
     Paint paint = new Paint();
-    int x;
-    int y;
+    float x;
+    float y;
 
-    public UserLocation(Context context, int posX, int posY) {
+    public UserLocation(Context context, double posX, double posY) {
         super(context);
-        x=posX;
-        y=posY;
+        x=(float)posX;
+        y=(float)posY;
     }
     @Override
     public void onDraw(Canvas canvas) {
