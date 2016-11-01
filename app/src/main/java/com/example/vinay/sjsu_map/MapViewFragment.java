@@ -101,6 +101,7 @@ public class MapViewFragment extends Fragment {
             //doMySearch(query);
         }
 
+
         v.setOnTouchListener(new View.OnTouchListener(){
             public boolean onTouch(View v, MotionEvent event){
 
@@ -203,6 +204,22 @@ public class MapViewFragment extends Fragment {
             }
         }
         );
+
+        ImageView closeButton = (ImageView)searchView.findViewById(R.id.search_close_btn);
+
+        // Set on click listener
+        closeButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                System.out.println("Inside the on clear method method");
+                //getActivity().finish();
+                //startActivity(getActivity().getIntent());
+            }
+        });
+
+
+
     }
 
         public void getCurrentUserLocation() {
@@ -264,7 +281,7 @@ class UserLocation extends View{
         marker = BitmapFactory.decodeResource(getResources(),
                 R.drawable.addressmarker);
         canvas.drawBitmap( Bitmap.createScaledBitmap(marker,80,80,true)
-                , 300, 400, paint);
+                , x, y, paint);
     }
 }
 
@@ -285,6 +302,6 @@ class BuildingMarker extends View{
         marker = BitmapFactory.decodeResource(getResources(),
                 R.drawable.addressmarker);
         canvas.drawBitmap( Bitmap.createScaledBitmap(marker,80,80,true)
-                , x, y, paint);
+                , 200, 500, paint);
     }
 }
