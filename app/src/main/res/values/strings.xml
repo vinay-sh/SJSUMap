@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">MapLab</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="hint_search">Search</string>
+    <string name="hint_search">Search Buildings</string>
     <!--<string name="lbl_you_are_at">YOU ARE AT</string>-->
     <!--<string name="btn_get_location">GET MY LOCATION</string>-->
     <!--<string name="btn_start_location_updates">START LOCATION UPDATES</string>-->

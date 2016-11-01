@@ -1,10 +1,12 @@
 package com.example.vinay.sjsu_map;
 
+import android.app.SearchManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -91,6 +93,13 @@ public class MapViewFragment extends Fragment {
 
        //RelativeLayout relativeLayout = (RelativeLayout) v.findViewById(R.id.mapView);
        // relativeLayout.addView(new UserLocation(getActivity(),300,500));
+
+        Intent intent = getActivity().getIntent();
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            String query = intent.getStringExtra(SearchManager.QUERY);
+            System.out.println("The query us"+query);
+            //doMySearch(query);
+        }
 
         v.setOnTouchListener(new View.OnTouchListener(){
             public boolean onTouch(View v, MotionEvent event){
@@ -184,10 +193,10 @@ public class MapViewFragment extends Fragment {
                 ListIterator<Building> iterator= buildingList.listIterator();
                 while(iterator.hasNext()){
                     Building currBuilding = (Building)iterator.next();
-                    if( query.equalsIgnoreCase(currBuilding.getName())){
+                    if( query.equalsIgnoreCase(currBuilding.getName()) || query.equalsIgnoreCase(currBuilding.getAbbreviation())){
                         System.out.println("The search matches"+currBuilding.getName());
                         RelativeLayout relativeLayout = (RelativeLayout) v.findViewById(R.id.mapView);
-                        relativeLayout.addView(new UserLocation(getActivity(),calculateX(currBuilding.getLongitude()),calculateY(currBuilding.getLatitude())));
+                        relativeLayout.addView(new BuildingMarker(getActivity(),calculateX(currBuilding.getLongitude()),calculateY(currBuilding.getLatitude())));
                     }
                 }
                 return true;
@@ -241,6 +250,7 @@ class UserLocation extends View{
     Paint paint = new Paint();
     float x;
     float y;
+    Bitmap marker;
 
     public UserLocation(Context context, double posX, double posY) {
         super(context);
@@ -251,6 +261,30 @@ class UserLocation extends View{
     public void onDraw(Canvas canvas) {
         paint.setColor(Color.RED);
         canvas.drawCircle(x, y, 20, paint);
+        marker = BitmapFactory.decodeResource(getResources(),
+                R.drawable.addressmarker);
+        canvas.drawBitmap( Bitmap.createScaledBitmap(marker,80,80,true)
+                , 300, 400, paint);
     }
 }
 
+class BuildingMarker extends View{
+    Paint paint = new Paint();
+    float x;
+    float y;
+    Bitmap marker;
+
+    public BuildingMarker(Context context, double posX, double posY) {
+        super(context);
+        x=(float)posX;
+        y=(float)posY;
+    }
+    @Override
+    public void onDraw(Canvas canvas) {
+        paint.setColor(Color.RED);
+        marker = BitmapFactory.decodeResource(getResources(),
+                R.drawable.addressmarker);
+        canvas.drawBitmap( Bitmap.createScaledBitmap(marker,80,80,true)
+                , x, y, paint);
+    }
+}
