@@ -1,5 +1,6 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mapView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.vinay.sjsu_map.MapViewActivity">
@@ -8,15 +9,25 @@
         android:id="@+id/image_areas"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:scaleType="fitCenter"
+        android:scaleType="fitXY"
         android:visibility="invisible"
         android:src="@drawable/mapinvisibleview"
         />
     <ImageView
         android:id="@+id/image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:scaleType="fitCenter"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:scaleType="fitXY"
         android:src="@drawable/campusmap"
         />
-</FrameLayout>
+
+    <Button
+        android:id="@+id/streetview"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/fetchuserlocation"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        />
+
+</RelativeLayout>

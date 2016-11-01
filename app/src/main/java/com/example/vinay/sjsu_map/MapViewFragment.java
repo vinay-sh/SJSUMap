@@ -5,6 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -19,9 +23,12 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -58,6 +65,7 @@ public class MapViewFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         setHasOptionsMenu(true);
+
         buildingList = new ArrayList<Building>() {
             {
                 add(new Building("King Library", "kinglibrary", "Dr. Martin Luther King, Jr. Library, 150 East San Fernando Street, San Jose, CA 95112", "KING", -959, 37.3339968, -121.9038523));
@@ -80,6 +88,10 @@ public class MapViewFragment extends Fragment {
 
         // Inflate the layout for this fragment
         v = inflater.inflate(R.layout.fragment_map_view, container, false);
+
+       RelativeLayout relativeLayout = (RelativeLayout) v.findViewById(R.id.mapView);
+        relativeLayout.addView(new UserLocation(getActivity(),300,500));
+
         v.setOnTouchListener(new View.OnTouchListener(){
             public boolean onTouch(View v, MotionEvent event){
 
@@ -222,3 +234,21 @@ class ResponseReceiver extends BroadcastReceiver{
     }
 
 }
+
+class UserLocation extends View{
+    Paint paint = new Paint();
+    int x;
+    int y;
+
+    public UserLocation(Context context, int posX, int posY) {
+        super(context);
+        x=posX;
+        y=posY;
+    }
+    @Override
+    public void onDraw(Canvas canvas) {
+        paint.setColor(Color.RED);
+        canvas.drawCircle(x, y, 20, paint);
+    }
+}
+
