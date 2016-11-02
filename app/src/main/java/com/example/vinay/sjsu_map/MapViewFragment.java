@@ -10,6 +10,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.location.Location;
 import android.location.LocationListener;
@@ -30,6 +31,7 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -196,8 +198,8 @@ public class MapViewFragment extends Fragment {
         inflater.inflate(R.menu.menu_search, menu);
         super.onCreateOptionsMenu(menu,inflater);
 
-        MenuItem searchItem = menu.findItem(R.id.search);
-        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        final MenuItem searchItem = menu.findItem(R.id.search);
+        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener(){
             @Override
             public boolean onQueryTextChange(String newText){
@@ -225,14 +227,22 @@ public class MapViewFragment extends Fragment {
 
         ImageView closeButton = (ImageView)searchView.findViewById(R.id.search_close_btn);
 
+
         // Set on click listener
         closeButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
                 System.out.println("Inside the on clear method method");
-                getActivity().finish();
-                startActivity(getActivity().getIntent());
+
+                searchView.setQuery("", false);
+                //Collapse the action view
+                searchView.onActionViewCollapsed();
+                //Collapse the search widget
+                searchItem.collapseActionView();
+
+                RelativeLayout relativeLayout = (RelativeLayout) v.findViewById(R.id.mapView);
+                relativeLayout.addView(new ClearMarker(getActivity()));
             }
         });
 
@@ -324,6 +334,27 @@ class BuildingMarker extends View{
         marker = BitmapFactory.decodeResource(getResources(),
                 R.drawable.addressmarker);
         canvas.drawBitmap( Bitmap.createScaledBitmap(marker,80,80,true)
-                , 200, 500, paint);
+                , x, y, paint);
+    }
+}
+
+
+class ClearMarker extends View{
+    Paint paint = new Paint();
+    Bitmap marker;
+
+    public ClearMarker(Context context) {
+        super(context);
+    }
+    @Override
+    public void onDraw(Canvas canvas) {
+        //invalidate();
+        Bitmap mapView = BitmapFactory.decodeResource(getResources(),
+                R.drawable.campusmap);
+        canvas.drawBitmap( Bitmap.createScaledBitmap(mapView,1430,2100,true)
+                , 0, 0, paint);
+        //paint.setColor(Color.RED);
+       // canvas.drawColor(0, PorterDuff.Mode.CLEAR);
+
     }
 }
