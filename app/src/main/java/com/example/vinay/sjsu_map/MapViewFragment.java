@@ -215,9 +215,9 @@ public class MapViewFragment extends Fragment {
                 while(iterator.hasNext()){
                     Building currBuilding = (Building)iterator.next();
                     if( query.equalsIgnoreCase(currBuilding.getName()) || query.equalsIgnoreCase(currBuilding.getAbbreviation())){
-                        System.out.println("The search matches"+currBuilding.getName());
+                        System.out.println("The search matches "+currBuilding.getName());
                         RelativeLayout relativeLayout = (RelativeLayout) v.findViewById(R.id.mapView);
-                        relativeLayout.addView(new BuildingMarker(getActivity(),currBuilding.getX(),currBuilding.getY()/* calculateX(currBuilding.getLongitude()), calculateY(currBuilding.getLatitude())*/));
+                        relativeLayout.addView(new BuildingMarker(getActivity(),currBuilding.getX(),currBuilding.getY()));/* calculateX(currBuilding.getLongitude()), calculateY(currBuilding.getLatitude())));*/
                     }
                 }
                 return true;
@@ -335,6 +335,7 @@ class BuildingMarker extends View{
                 R.drawable.addressmarker);
         canvas.drawBitmap( Bitmap.createScaledBitmap(marker,80,80,true)
                 , x, y, paint);
+
     }
 }
 
