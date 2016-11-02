@@ -89,25 +89,28 @@ public class AsyncTaskGoogleMapAPI extends AsyncTask<Double, Void, Void> {
             }
             System.out.println("**********Response JSON data : " + response);
 
-            //Parsing JSON response
-            Gson gsonObj = new Gson();
 
-            JsonElement jelement = new JsonParser().parse(response.toString());
-            JsonObject distanceObj, timeObj;
-            JsonObject jobject = jelement.getAsJsonObject();
-            JsonArray jArray = jobject.getAsJsonArray("rows");
-            jobject = jArray.get(0).getAsJsonObject();
-            jArray = jobject.getAsJsonArray("elements");
-            jobject = jArray.get(0).getAsJsonObject();
+                //Parsing JSON response
+                Gson gsonObj = new Gson();
 
-            distanceObj = jobject.getAsJsonObject("distance");
-            timeObj = jobject.getAsJsonObject("duration");
+                JsonElement jelement = new JsonParser().parse(response.toString());
+                JsonObject distanceObj, timeObj;
+                JsonObject jobject = jelement.getAsJsonObject();
+                JsonArray jArray = jobject.getAsJsonArray("rows");
+                jobject = jArray.get(0).getAsJsonObject();
+                jArray = jobject.getAsJsonArray("elements");
+                jobject = jArray.get(0).getAsJsonObject();
+                if(jobject.getAsJsonObject("distance")!=null) {
+                    distanceObj = jobject.getAsJsonObject("distance");
+                    timeObj = jobject.getAsJsonObject("duration");
 
-            distance = distanceObj.get("text").toString();
-            time = timeObj.get("text").toString();
+                    distance = distanceObj.get("text").toString();
+                    time = timeObj.get("text").toString();
 
-            System.out.println("**********Distance is  " + distance);
-            System.out.println("**********Time is " + time);
+
+                    System.out.println("**********Distance is  " + distance);
+                    System.out.println("**********Time is " + time);
+                }
 
             in.close();
 
@@ -124,11 +127,15 @@ public class AsyncTaskGoogleMapAPI extends AsyncTask<Double, Void, Void> {
 
         final TextView t = timeref.get();
         final TextView dist = distanceref.get();
-        if(time!=null){
+        if(t!=null){
             t.setText(time);
         }
         if(dist!=null){
             dist.setText(distance);
+        }
+        if(time==null && distance==null){
+            t.setText("Fetch user's current location and try again.");
+            dist.setText("Fetch user's current location and try again.");
         }
 
     }
