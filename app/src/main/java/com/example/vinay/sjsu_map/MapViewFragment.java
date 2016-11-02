@@ -215,7 +215,7 @@ public class MapViewFragment extends Fragment {
                     if( query.equalsIgnoreCase(currBuilding.getName()) || query.equalsIgnoreCase(currBuilding.getAbbreviation())){
                         System.out.println("The search matches"+currBuilding.getName());
                         RelativeLayout relativeLayout = (RelativeLayout) v.findViewById(R.id.mapView);
-                        relativeLayout.addView(new BuildingMarker(getActivity(),/*currBuilding.getX(),currBuilding.getY()*/ calculateX(currBuilding.getLongitude()), calculateY(currBuilding.getLatitude())));
+                        relativeLayout.addView(new BuildingMarker(getActivity(),currBuilding.getX(),currBuilding.getY()/* calculateX(currBuilding.getLongitude()), calculateY(currBuilding.getLatitude())*/));
                     }
                 }
                 return true;
