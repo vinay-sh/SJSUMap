@@ -1,9 +1,9 @@
 package com.example.vinay.sjsu_map;
 
 import android.content.Context;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
+import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -14,7 +14,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Button;
 
-import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.maps.model.LatLng;
+
+import java.util.List;
 
 public class BuildingDetailFragment extends Fragment {
 
@@ -36,6 +38,7 @@ public class BuildingDetailFragment extends Fragment {
     private TextView buildingAddressTextView;
     private TextView timeNeededTextView;
     private TextView distanceTextView;
+    private String baddress;
 
     private AsyncTaskGoogleMapAPI asyncTask;
 
@@ -74,6 +77,7 @@ public class BuildingDetailFragment extends Fragment {
 
 
         //Latitude and longitude of the building
+        baddress = (String) getActivity().getIntent().getSerializableExtra(ADDRESS);
         blatitude = (double) getActivity().getIntent().getSerializableExtra(B_LATITUDE);
         blongitude = (double) getActivity().getIntent().getSerializableExtra(B_LONGITUDE);
 
@@ -81,8 +85,6 @@ public class BuildingDetailFragment extends Fragment {
         ulongitude = (double) getActivity().getIntent().getSerializableExtra(U_LONGITUDE);
 
         System.out.println("**********VINAY BuildingDetailFragment latitude and longitude is "+ulatitude+" & "+ulongitude);
-
-
 
         buildingName = (String) getActivity().getIntent().getSerializableExtra(NAME);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(buildingName);
@@ -96,27 +98,61 @@ public class BuildingDetailFragment extends Fragment {
         int id = getResources().getIdentifier("com.example.vinay.sjsu_map:drawable/" + buildingImage, null, null);
         buildingImageView.setImageResource(id);
 
-//        timeNeeded = (int) getActivity().getIntent().getSerializableExtra(TIMENEEDED);
         timeNeededTextView = (TextView) v.findViewById(R.id.timeTaken);
         timeNeededTextView.setText(0+" mins");
 
-//        distance = (int) getActivity().getIntent().getSerializableExtra(DISTANCE);
         distanceTextView = (TextView) v.findViewById(R.id.distanceToBuilding);
         distanceTextView.setText(0 + " kms");
 
-        asyncTask = new AsyncTaskGoogleMapAPI(timeNeededTextView, distanceTextView);
-        asyncTask.execute(ulatitude, ulongitude, blatitude, blongitude);
+        asyncTask = new AsyncTaskGoogleMapAPI(timeNeededTextView, distanceTextView, baddress);
+        asyncTask.execute(ulatitude, ulongitude);
 
-//        stview = (Button)v.findViewById(R.id.button2);
-//        stview.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent i = new Intent(getActivity(), StreetViewActivity.class);
-//                startActivity(i);
-//            }
-//        });
+        getLocationFromAddress(getActivity().getApplicationContext(), baddress);
+
+        blatitude = (double) getActivity().getIntent().getSerializableExtra(B_LATITUDE);
+        blongitude = (double) getActivity().getIntent().getSerializableExtra(B_LONGITUDE);
+
+        stview = (Button)v.findViewById(R.id.streetview);
+        stview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getActivity(), StreetViewActivity.class);
+                i.putExtra(StreetViewActivity.B_LATITUDE,blatitude);
+                i.putExtra(StreetViewActivity.B_LONGITUDE,blongitude);
+                startActivity(i);
+            }
+        });
 
         return v;
+    }
+
+    public void getLocationFromAddress(Context context, String strAddress) {
+
+        Geocoder coder = new Geocoder(context);
+        List<Address> address;
+        LatLng p1 = null;
+
+        try {
+            address = coder.getFromLocationName(strAddress, 5);
+            if (address == null) {
+                return;
+            }
+            Address location = address.get(0);
+            location.getLatitude();
+            location.getLongitude();
+
+            p1 = new LatLng(location.getLatitude(), location.getLongitude() );
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
+
+        blatitude = p1.latitude;
+        blongitude = p1.longitude;
+
+        System.out.println("**********VINAY Calculated Building's lat and lng "+blatitude+" & "+blongitude);
+
     }
 
 }

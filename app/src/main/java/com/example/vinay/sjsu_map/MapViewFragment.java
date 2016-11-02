@@ -29,9 +29,11 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,16 +42,17 @@ import java.util.ListIterator;
 public class MapViewFragment extends Fragment {
 
     private List<Building> buildingList;
-    private double ImageExtentLeft = -121.886032;
-    private double ImageExtentRight = -121.879503;
-    private double ImageExtentBottom = 37.334515;
-    private double ImageExtentTop = 37.338823;
-    private int image_width = 1070;
-    private int image_height = 850;
+    private double ImageExtentLeft = -121.887608;
+    private double ImageExtentRight = -121.876020;
+    private double ImageExtentBottom = 37.3344444;
+    private double ImageExtentTop = 37.337427;
+    private int image_width = 1430;
+    private int image_height = 2100;
     private View v;
     private static double ulatitude=0;
     private static double ulongitude=0;
     private ResponseReceiver receiver;
+    private Button fetchuserloc;
 
     // private OnFragmentInteractionListener mListener;
 
@@ -70,12 +73,12 @@ public class MapViewFragment extends Fragment {
 
         buildingList = new ArrayList<Building>() {
             {
-                add(new Building("King Library", "kinglibrary", "Dr. Martin Luther King, Jr. Library, 150 East San Fernando Street, San Jose, CA 95112", "KING", -959, 37.3339968, -121.9038523));
-                add(new Building("Engineering Building", "engg", "San Jose State University Charles W. Davidson College of Engineering, 1 Washington Square, San Jose, CA 95112", "EB",-49133, 37.3367016, -121.8834582));
-                add(new Building("Yoshihiro Uchida Hall", "yuh", "Yoshihiro Uchida Hall, San Jose, CA 95112", "YUH", -4641443, 37.3355344, -121.8873859));
-                add(new Building("Student Union", "su", "Student Union Building, San Jose, CA 95112", "SU", -6739523, 37.3367016, -121.8834582));
-                add(new Building("BBC", "bbc", "Boccardo Business Complex, San Jose, CA 95112", "BBC", -11722061, 37.3359085, -121.8803279));
-                add(new Building("South Parking Garage", "spg", "San Jose State University South Garage, 330 South 7th Street, San Jose, CA 95112", "SPG", -38400, 37.3333866, -121.8808004));
+                add(new Building("King Library", "kinglibrary", "Dr. Martin Luther King, Jr. Library, 150 East San Fernando Street, San Jose, CA 95112", "KING", -959, 37.335338, -121.885043,182,611));
+                add(new Building("Engineering Building", "engg", "San Jose State University Charles W. Davidson College of Engineering, 1 Washington Square, San Jose, CA 95112", "EB",-49133, 37.337129, -121.881717,863,683));
+                add(new Building("Yoshihiro Uchida Hall", "yuh", "Yoshihiro Uchida Hall, San Jose, CA 95112", "YUH", -4641443, 37.333553, -121.883757,165,1324));
+                add(new Building("Student Union", "su", "Student Union Building, San Jose, CA 95112", "SU", -6739523, 37.336430, -121.881202,823,955));
+                add(new Building("BBC", "bbc", "Boccardo Business Complex, San Jose, CA 95112", "BBC", -11722061, 37.336649, -121.878493,1209,1145));
+                add(new Building("South Parking Garage", "spg", "San Jose State University South Garage, 330 South 7th Street, San Jose, CA 95112", "SPG", -38400, 37.3332248,-121.8797073,540,1805));
             }
         };
 
@@ -85,14 +88,28 @@ public class MapViewFragment extends Fragment {
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(receiver,filter);
 
 
-        getCurrentUserLocation();
-
-
         // Inflate the layout for this fragment
         v = inflater.inflate(R.layout.fragment_map_view, container, false);
-
+        //getCurrentUserLocation();
        //RelativeLayout relativeLayout = (RelativeLayout) v.findViewById(R.id.mapView);
        // relativeLayout.addView(new UserLocation(getActivity(),300,500));
+
+        fetchuserloc = (Button)v.findViewById(R.id.fetchuser);
+        fetchuserloc.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                final LocationManager manager = (LocationManager) getActivity().getSystemService( Context.LOCATION_SERVICE );
+
+                if ( !manager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
+                    Toast.makeText(getActivity().getApplicationContext(), "Switch on the GPS to fetch user's current location", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    Toast.makeText(getActivity().getApplicationContext(), "Fetching user's current location", Toast.LENGTH_SHORT).show();
+                    getCurrentUserLocation();
+                }
+            }
+        });
 
         Intent intent = getActivity().getIntent();
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
@@ -112,11 +129,12 @@ public class MapViewFragment extends Fragment {
                 System.out.println("The value is " +colorInt);
                 System.out.println("The value is "+xpos+","+ypos);
 
-                getCurrentUserLocation();
-                System.out.println("*****Current user latitude and longitude is "+ulatitude+" & "+ulongitude);
+                //getCurrentUserLocation();
+                //System.out.println("*****Current user latitude and longitude is "+ulatitude+" & "+ulongitude);
 
                 ListIterator<Building> iterator= buildingList.listIterator();
 
+                System.out.println("**********VINAY OnCLick Location Button(  "+ulatitude+" , "+ulongitude);
 
                 while(iterator.hasNext()){
                     Building currBuilding = (Building)iterator.next();
@@ -170,7 +188,7 @@ public class MapViewFragment extends Fragment {
     public double calculateY(double lat){
         double res = image_height * ( 1 - ( lat - ImageExtentBottom) / (ImageExtentTop - ImageExtentBottom));
         System.out.println("Value of CalculateY is "+res);
-        return res+575;
+        return res;
     }
 
     @Override
@@ -197,7 +215,7 @@ public class MapViewFragment extends Fragment {
                     if( query.equalsIgnoreCase(currBuilding.getName()) || query.equalsIgnoreCase(currBuilding.getAbbreviation())){
                         System.out.println("The search matches"+currBuilding.getName());
                         RelativeLayout relativeLayout = (RelativeLayout) v.findViewById(R.id.mapView);
-                        relativeLayout.addView(new BuildingMarker(getActivity(),calculateX(currBuilding.getLongitude()),calculateY(currBuilding.getLatitude())));
+                        relativeLayout.addView(new BuildingMarker(getActivity(),/*currBuilding.getX(),currBuilding.getY()*/ calculateX(currBuilding.getLongitude()), calculateY(currBuilding.getLatitude())));
                     }
                 }
                 return true;
@@ -213,8 +231,8 @@ public class MapViewFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 System.out.println("Inside the on clear method method");
-                //getActivity().finish();
-                //startActivity(getActivity().getIntent());
+                getActivity().finish();
+                startActivity(getActivity().getIntent());
             }
         });
 
@@ -232,8 +250,12 @@ public class MapViewFragment extends Fragment {
 
     @Override
     public void onDestroy(){
-        getContext().unregisterReceiver(receiver);
         super.onDestroy();
+        try {
+            getContext().unregisterReceiver(receiver);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
 
     }
 
@@ -252,8 +274,8 @@ class ResponseReceiver extends BroadcastReceiver{
     @Override
     public void onReceive(Context context, Intent intent){
 
-        double latitude = intent.getDoubleExtra(GetLocationService.LATITUDE, 1.00);
-        double longitude = intent.getDoubleExtra(GetLocationService.LONGITUDE, 1.00);
+        double latitude = intent.getDoubleExtra(GetLocationService.LATITUDE, 0/*37.334968*/);
+        double longitude = intent.getDoubleExtra(GetLocationService.LONGITUDE, 0/*-121.879637*/);
         System.out.println("**********VINAY Intent response()  "+latitude+" , "+longitude);
 
         MapViewFragment mvf = new MapViewFragment();

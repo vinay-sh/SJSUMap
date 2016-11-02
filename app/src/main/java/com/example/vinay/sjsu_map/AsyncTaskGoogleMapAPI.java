@@ -28,7 +28,7 @@ import javax.xml.transform.Result;
  * Created by Vinay on 10/28/2016.
  */
 
-public class AsyncTaskGoogleMapAPI extends AsyncTask<Double, TextView, Void> {
+public class AsyncTaskGoogleMapAPI extends AsyncTask<Double, Void, Void> {
 //    protected void onPreExecute(){
 //        super.onPreExecute();
 //    }
@@ -36,18 +36,29 @@ public class AsyncTaskGoogleMapAPI extends AsyncTask<Double, TextView, Void> {
     private static final String API_KEY = "AIzaSyC_ve8XnnHKgKh_bdVsK1foxA2MWMezmY8";
     private final WeakReference<TextView> timeref;
     private final WeakReference<TextView> distanceref;
-    String distance, time;
+    String distance, time, address;
 
-    public AsyncTaskGoogleMapAPI(TextView a, TextView b){
+    public AsyncTaskGoogleMapAPI(TextView a, TextView b, String add){
         timeref = new WeakReference<TextView>(a);
         distanceref = new WeakReference<TextView>(b);
+        address = add;
+    }
 
+    public String encodeURL(String address){
+        String a = "null";
+        try {
+            a = URLEncoder.encode(address, "utf-8");
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return a;
     }
 
     @Override
     protected Void doInBackground(Double... params){
         try{
-            String str = "https://maps.google.com/maps/api/distancematrix/json?origins=" +params[0]+ "," + params[1] + "&destinations=" + params[2] + "," + params[3] + "&sensor=false&units=metric&key=" + API_KEY;
+            address=encodeURL(address);
+            String str = "https://maps.google.com/maps/api/distancematrix/json?origins=" +params[0]+ "," + params[1] + "&destinations=" + address  + "&sensor=false&units=metric&key=" + API_KEY;
             //String str2 = "http://maps.google.com/maps/api/distancematrix/json?origins=" + URLEncoder.encode(str, "UTF-8");
             System.out.println("**********Sending URL "+str);
             URL myurl = new URL(str);

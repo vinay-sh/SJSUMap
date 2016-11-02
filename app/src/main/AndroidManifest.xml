@@ -35,10 +35,13 @@
             android:configChanges="orientation|keyboardHidden" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.vinay.sjsu_map.BuildingDetailActivity" />
+                android:value=".MapViewActivity" />
         </activity>
 
-        <activity android:name=".StreetViewActivity"></activity>
+        <activity android:name=".StreetViewActivity">
+            <meta-data android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MapViewActivity"/>
+        </activity>
         <service
             android:name=".GetLocationService"
             android:exported="false"/>
@@ -48,5 +51,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
 
 </manifest>

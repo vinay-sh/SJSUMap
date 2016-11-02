@@ -119,6 +119,21 @@
             />
 
     </LinearLayout>
+<!--=======-->
+        <!--android:layout_below="@+id/distanceToBuilding"-->
+        <!--android:layout_marginLeft="15dp"-->
+        <!--android:layout_marginTop="62dp" />-->
+
+
+    <!--<Button-->
+        <!--android:text="Street View"-->
+        <!--android:layout_width="191dp"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/stview"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_centerHorizontal="true"-->
+        <!--android:layout_marginBottom="20dp" />-->
+<!--&gt;>>>>>> Stashed changes-->
 
 </RelativeLayout>
 
