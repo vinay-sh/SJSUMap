@@ -12,6 +12,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
+import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -41,7 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 
-public class MapViewFragment extends Fragment {
+public class MapViewFragment extends Fragment implements LocationListener{
 
     private List<Building> buildingList;
     private double ImageExtentLeft = -121.887608;
@@ -78,28 +79,54 @@ public class MapViewFragment extends Fragment {
                 add(new Building("King Library", "kinglibrary", "Dr. Martin Luther King, Jr. Library, 150 East San Fernando Street, San Jose, CA 95112", "KING", -959, 37.335338, -121.885043,182,611));
                 add(new Building("Engineering Building", "engg", "San Jose State University Charles W. Davidson College of Engineering, 1 Washington Square, San Jose, CA 95112", "EB",-49133, 37.337129, -121.881717,863,683));
                 add(new Building("Yoshihiro Uchida Hall", "yuh", "Yoshihiro Uchida Hall, San Jose, CA 95112", "YUH", -4641443, 37.333553, -121.883757,165,1324));
-                add(new Building("Student Union", "su", "Student Union Building, San Jose, CA 95112", "SU", -6739523, 37.336430, -121.881202,823,955));
+                add(new Building("Student Union", "su", "SJSU Student Union, San Jose, CA 95112", "SU", -6739523, 37.336430, -121.881202,823,955));
                 add(new Building("BBC", "bbc", "Boccardo Business Complex, San Jose, CA 95112", "BBC", -11722061, 37.336649, -121.878493,1209,1145));
                 add(new Building("South Parking Garage", "spg", "San Jose State University South Garage, 330 South 7th Street, San Jose, CA 95112", "SPG", -38400, 37.3332248,-121.8797073,540,1805));
             }
         };
 
-        IntentFilter filter = new IntentFilter(ResponseReceiver.PROCESS_RESPONSE);
-        filter.addCategory(Intent.CATEGORY_DEFAULT);
-        receiver = new ResponseReceiver();
-        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(receiver,filter);
+//        IntentFilter filter = new IntentFilter(ResponseReceiver.PROCESS_RESPONSE);
+//        filter.addCategory(Intent.CATEGORY_DEFAULT);
+//        receiver = new ResponseReceiver();
+//        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(receiver,filter);
 
 
         // Inflate the layout for this fragment
         v = inflater.inflate(R.layout.fragment_map_view, container, false);
         //getCurrentUserLocation();
-       //RelativeLayout relativeLayout = (RelativeLayout) v.findViewById(R.id.mapView);
-       // relativeLayout.addView(new UserLocation(getActivity(),300,500));
+       RelativeLayout relativeLayout = (RelativeLayout) v.findViewById(R.id.mapView);
+       relativeLayout.addView(new UserLocation(getActivity(),calculateX(ulongitude),calculateY(ulatitude)));
+
+//        private final LocationListener mlocationListener = new LocationListener() {
+
+        // Acquire a reference to the system Location Manager
+        LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+
+        // Define a listener that responds to location updates
+        LocationListener locationListener = new LocationListener() {
+            public void onLocationChanged(Location location) {
+                // Called when a new location is found by the network location provider.
+                System.out.println("**********VINAY OnLocationChanged  "+location.getLatitude()+" , "+location.getLongitude());
+                ulatitude = location.getLatitude();
+                ulongitude = location.getLongitude();
+            }
+
+            public void onStatusChanged(String provider, int status, Bundle extras) {}
+
+            public void onProviderEnabled(String provider) {}
+
+            public void onProviderDisabled(String provider) {}
+        };
+
+        // Register the listener with the Location Manager to receive location updates
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+
 
         fetchuserloc = (Button)v.findViewById(R.id.fetchuser);
         fetchuserloc.setOnClickListener(new View.OnClickListener() {
 
-            @Override
+             @Override
             public void onClick(View v) {
                 final LocationManager manager = (LocationManager) getActivity().getSystemService( Context.LOCATION_SERVICE );
 
@@ -107,8 +134,9 @@ public class MapViewFragment extends Fragment {
                     Toast.makeText(getActivity().getApplicationContext(), "Switch on the GPS to fetch user's current location", Toast.LENGTH_SHORT).show();
                 }
                 else{
-                    Toast.makeText(getActivity().getApplicationContext(), "Fetching user's current location", Toast.LENGTH_SHORT).show();
-                    getCurrentUserLocation();
+                    Toast.makeText(getActivity().getApplicationContext(), "Fetching user's current location", Toast.LENGTH_LONG).show();
+//                    LocationListener locationListener = new MyLocationListener();
+                    //getCurrentUserLocation();
                 }
             }
         });
@@ -172,6 +200,20 @@ public class MapViewFragment extends Fragment {
 
         return v;
     }
+
+    @Override
+    public void onLocationChanged(final Location loc) {
+        System.out.println("*****VINAY LocationManager Fetched User coordinates of the user: Latitude "+loc.getLatitude()+" Longitude "+loc.getLongitude());
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {}
+
+    @Override
+    public void onProviderEnabled(String provider) {}
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {}
 
     public int getHotspotColor ( int x, int y) {
         ImageView img = (ImageView) v.findViewById(R.id.image_areas);
@@ -246,8 +288,6 @@ public class MapViewFragment extends Fragment {
             }
         });
 
-
-
     }
 
         public void getCurrentUserLocation() {
@@ -257,12 +297,11 @@ public class MapViewFragment extends Fragment {
 
         }
 
-
     @Override
     public void onDestroy(){
         super.onDestroy();
         try {
-            getContext().unregisterReceiver(receiver);
+//            getContext().unregisterReceiver(receiver);
         }catch(Exception e){
             e.printStackTrace();
         }
@@ -310,10 +349,10 @@ class UserLocation extends View{
     public void onDraw(Canvas canvas) {
         paint.setColor(Color.RED);
         canvas.drawCircle(x, y, 20, paint);
-        marker = BitmapFactory.decodeResource(getResources(),
-                R.drawable.addressmarker);
-        canvas.drawBitmap( Bitmap.createScaledBitmap(marker,80,80,true)
-                , x, y, paint);
+//        marker = BitmapFactory.decodeResource(getResources(),
+//                R.drawable.addressmarker);
+//        canvas.drawBitmap( Bitmap.createScaledBitmap(marker,80,80,true)
+//                , x, y, paint);
     }
 }
 
@@ -359,3 +398,20 @@ class ClearMarker extends View{
 
     }
 }
+
+//class MyLocationListener implements LocationListener {
+//
+//    @Override
+//    public void onLocationChanged(Location loc) {
+//        System.out.println("*****VINAY New User coordinates of the user: Latitude "+loc.getLatitude()+" Longitude "+loc.getLongitude());
+//    }
+//
+//    @Override
+//    public void onProviderDisabled(String provider) {}
+//
+//    @Override
+//    public void onProviderEnabled(String provider) {}
+//
+//    @Override
+//    public void onStatusChanged(String provider, int status, Bundle extras) {}
+//}

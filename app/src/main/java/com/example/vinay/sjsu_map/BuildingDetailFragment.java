@@ -2,6 +2,7 @@ package com.example.vinay.sjsu_map;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
@@ -75,6 +76,7 @@ public class BuildingDetailFragment extends Fragment {
 //        GetMyLocation myloc = new GetMyLocation();
 //        myloc.getLocation(getContext(), lr);
 
+        Typeface boldTypeface = Typeface.defaultFromStyle(Typeface.BOLD);
 
         //Latitude and longitude of the building
         baddress = (String) getActivity().getIntent().getSerializableExtra(ADDRESS);
@@ -92,6 +94,7 @@ public class BuildingDetailFragment extends Fragment {
         buildingAddress = (String) getActivity().getIntent().getSerializableExtra(ADDRESS);
         buildingAddressTextView = (TextView) v.findViewById(R.id.buildingAddress);
         buildingAddressTextView.setText(buildingAddress);
+        buildingAddressTextView.setTypeface(boldTypeface);
 
         buildingImage = (String) getActivity().getIntent().getSerializableExtra(IMAGE);
         buildingImageView = (ImageView) v.findViewById(R.id.buildingImage);
@@ -107,7 +110,7 @@ public class BuildingDetailFragment extends Fragment {
         asyncTask = new AsyncTaskGoogleMapAPI(timeNeededTextView, distanceTextView, baddress);
         asyncTask.execute(ulatitude, ulongitude);
 
-        getLocationFromAddress(getActivity().getApplicationContext(), baddress);
+        //getLocationFromAddress(getActivity().getApplicationContext(), baddress);
 
         blatitude = (double) getActivity().getIntent().getSerializableExtra(B_LATITUDE);
         blongitude = (double) getActivity().getIntent().getSerializableExtra(B_LONGITUDE);

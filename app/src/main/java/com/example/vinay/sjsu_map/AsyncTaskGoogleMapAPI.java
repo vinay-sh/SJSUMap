@@ -1,5 +1,6 @@
 package com.example.vinay.sjsu_map;
 
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.support.v4.widget.TextViewCompat;
 import android.widget.TextView;
@@ -106,6 +107,12 @@ public class AsyncTaskGoogleMapAPI extends AsyncTask<Double, Void, Void> {
 
                     distance = distanceObj.get("text").toString();
                     time = timeObj.get("text").toString();
+                    if (distance.length() >= 2 && distance.charAt(0) == '"' && distance.charAt(distance.length() - 1) == '"') {
+                        distance =  distance.substring(1, distance.length() - 1);
+                    }
+                    if (time.length() >= 2 && time.charAt(0) == '"' && time.charAt(time.length() - 1) == '"') {
+                        time =  time.substring(1, time.length() - 1);
+                    }
 
 
                     System.out.println("**********Distance is  " + distance);
@@ -127,11 +134,15 @@ public class AsyncTaskGoogleMapAPI extends AsyncTask<Double, Void, Void> {
 
         final TextView t = timeref.get();
         final TextView dist = distanceref.get();
+        Typeface boldTypeface = Typeface.defaultFromStyle(Typeface.BOLD);
+
         if(t!=null){
             t.setText(time);
+            t.setTypeface(boldTypeface);
         }
         if(dist!=null){
             dist.setText(distance);
+            dist.setTypeface(boldTypeface);
         }
         if(time==null && distance==null){
             t.setText("Fetch user's current location and try again.");
