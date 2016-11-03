@@ -2,11 +2,7 @@ package com.example.vinay.sjsu_map;
 
 import android.graphics.Typeface;
 import android.os.AsyncTask;
-import android.support.v4.widget.TextViewCompat;
 import android.widget.TextView;
-
-import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStreamReader;
@@ -14,26 +10,18 @@ import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.Map;
-
-import org.json.*;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import javax.xml.transform.Result;
-
 /**
  * Created by Vinay on 10/28/2016.
  */
 
 public class AsyncTaskGoogleMapAPI extends AsyncTask<Double, Void, Void> {
-//    protected void onPreExecute(){
-//        super.onPreExecute();
-//    }
-//double originLat, double originLon, double destinatinLat, double destinationLon
+
     private static final String API_KEY = "AIzaSyC_ve8XnnHKgKh_bdVsK1foxA2MWMezmY8";
     private final WeakReference<TextView> timeref;
     private final WeakReference<TextView> distanceref;
@@ -60,7 +48,6 @@ public class AsyncTaskGoogleMapAPI extends AsyncTask<Double, Void, Void> {
         try{
             address=encodeURL(address);
             String str = "https://maps.google.com/maps/api/distancematrix/json?origins=" +params[0]+ "," + params[1] + "&destinations=" + address  + "&sensor=false&units=metric&key=" + API_KEY;
-            //String str2 = "http://maps.google.com/maps/api/distancematrix/json?origins=" + URLEncoder.encode(str, "UTF-8");
             System.out.println("**********Sending URL "+str);
             URL myurl = new URL(str);
 
@@ -68,18 +55,13 @@ public class AsyncTaskGoogleMapAPI extends AsyncTask<Double, Void, Void> {
             connection.setDoOutput(true);
             connection.connect();
             connection.setRequestMethod("POST");
-            //InputStream input = connection.getInputStream();
-
             DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
-//            wr.writeBytes(urlParameters);
             wr.flush();
             wr.close();
 
             int responseCode = connection.getResponseCode();
             System.out.println("**********Sending 'POST' request to URL : " + myurl);
-            // System.out.println("Post parameters : " + urlParameters);
             System.out.println("**********Response Code : " + responseCode);
-
             BufferedReader in = new BufferedReader(
                     new InputStreamReader(connection.getInputStream()));
             String inputLine;
@@ -90,10 +72,8 @@ public class AsyncTaskGoogleMapAPI extends AsyncTask<Double, Void, Void> {
             }
             System.out.println("**********Response JSON data : " + response);
 
-
                 //Parsing JSON response
                 Gson gsonObj = new Gson();
-
                 JsonElement jelement = new JsonParser().parse(response.toString());
                 JsonObject distanceObj, timeObj;
                 JsonObject jobject = jelement.getAsJsonObject();
@@ -113,8 +93,6 @@ public class AsyncTaskGoogleMapAPI extends AsyncTask<Double, Void, Void> {
                     if (time.length() >= 2 && time.charAt(0) == '"' && time.charAt(time.length() - 1) == '"') {
                         time =  time.substring(1, time.length() - 1);
                     }
-
-
                     System.out.println("**********Distance is  " + distance);
                     System.out.println("**********Time is " + time);
                 }

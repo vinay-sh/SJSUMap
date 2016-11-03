@@ -4,24 +4,18 @@ import android.app.SearchManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.Rect;
-import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
@@ -29,17 +23,12 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
@@ -205,17 +194,6 @@ public class MapViewFragment extends Fragment implements LocationListener{
                         startActivity(detailActivityIntent);
                         break;
                     }
-//
-//                int pointClicked = getHotspotColor(xpos, ypos);
-//                System.out.println("******** The value of the hotspot is " +pointClicked);
-//                System.out.println("The value is "+xpos+","+ypos);
-//
-//                //**Vinay.. Executing the AysncTask
-////                System.out.println("Value of X is "+calculateX(-121.8817131));
-////                System.out.println("Value of Y is "+calculateY(37.3367211));
-//
-//                String abc = "null";
-//                int flag=0;
                 }
 
                 return true;
@@ -363,7 +341,6 @@ class UserLocation extends View{
     Paint paint = new Paint();
     float x;
     float y;
-    Bitmap marker;
 
     public UserLocation(Context context, double posX, double posY) {
         super(context);
@@ -374,10 +351,6 @@ class UserLocation extends View{
     public void onDraw(Canvas canvas) {
         paint.setColor(Color.RED);
         canvas.drawCircle(x, y, 20, paint);
-//        marker = BitmapFactory.decodeResource(getResources(),
-//                R.drawable.addressmarker);
-//        canvas.drawBitmap( Bitmap.createScaledBitmap(marker,80,80,true)
-//                , x, y, paint);
     }
 }
 
@@ -403,7 +376,6 @@ class BuildingMarker extends View{
     }
 }
 
-
 class ClearMarker extends View{
     Paint paint = new Paint();
     Bitmap marker;
@@ -413,30 +385,10 @@ class ClearMarker extends View{
     }
     @Override
     public void onDraw(Canvas canvas) {
-        //invalidate();
         Bitmap mapView = BitmapFactory.decodeResource(getResources(),
                 R.drawable.campusmap);
         canvas.drawBitmap( Bitmap.createScaledBitmap(mapView,1430,2100,true)
                 , 0, 0, paint);
-        //paint.setColor(Color.RED);
-       // canvas.drawColor(0, PorterDuff.Mode.CLEAR);
 
     }
 }
-
-//class MyLocationListener implements LocationListener {
-//
-//    @Override
-//    public void onLocationChanged(Location loc) {
-//        System.out.println("*****VINAY New User coordinates of the user: Latitude "+loc.getLatitude()+" Longitude "+loc.getLongitude());
-//    }
-//
-//    @Override
-//    public void onProviderDisabled(String provider) {}
-//
-//    @Override
-//    public void onProviderEnabled(String provider) {}
-//
-//    @Override
-//    public void onStatusChanged(String provider, int status, Bundle extras) {}
-//}

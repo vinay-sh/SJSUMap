@@ -86,22 +86,7 @@ public class BuildingDetailFragment extends Fragment {
         // Inflate the layout for this fragment
         System.out.println("Inside building details");
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         View v = inflater.inflate(R.layout.fragment_building_detail, container, false);
-
-        //current Latitude and longitude of the user
-        //getCurrentUserLocation();
-
-//        GetMyLocation.LocationResult lr = new GetMyLocation.LocationResult() {
-//            @Override
-//            public void gotLocation(Location location) {
-//                System.out.println("******Coordinates"+location.getLatitude()+" , "+location.getLongitude());
-//            }
-//        };
-//
-//        GetMyLocation myloc = new GetMyLocation();
-//        myloc.getLocation(getContext(), lr);
-
         Typeface boldTypeface = Typeface.defaultFromStyle(Typeface.BOLD);
 
         //Latitude and longitude of the building
@@ -136,8 +121,6 @@ public class BuildingDetailFragment extends Fragment {
         asyncTask = new AsyncTaskGoogleMapAPI(timeNeededTextView, distanceTextView, baddress);
         asyncTask.execute(ulatitude, ulongitude);
 
-        //getLocationFromAddress(getActivity().getApplicationContext(), baddress);
-
         blatitude = (double) getActivity().getIntent().getSerializableExtra(B_LATITUDE);
         blongitude = (double) getActivity().getIntent().getSerializableExtra(B_LONGITUDE);
 
@@ -151,16 +134,13 @@ public class BuildingDetailFragment extends Fragment {
                 startActivity(i);
             }
         });
-
         return v;
     }
 
     public void getLocationFromAddress(Context context, String strAddress) {
-
         Geocoder coder = new Geocoder(context);
         List<Address> address;
         LatLng p1 = null;
-
         try {
             address = coder.getFromLocationName(strAddress, 5);
             if (address == null) {
@@ -169,17 +149,13 @@ public class BuildingDetailFragment extends Fragment {
             Address location = address.get(0);
             location.getLatitude();
             location.getLongitude();
-
             p1 = new LatLng(location.getLatitude(), location.getLongitude() );
-
         } catch (Exception e) {
-
             e.printStackTrace();
         }
 
         blatitude = p1.latitude;
         blongitude = p1.longitude;
-
         System.out.println("**********VINAY Calculated Building's lat and lng "+blatitude+" & "+blongitude);
 
     }

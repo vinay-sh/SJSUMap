@@ -6,10 +6,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import android.widget.Toast;
-
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 
@@ -37,30 +34,12 @@ public class GetLocationService extends IntentService implements GoogleApiClient
     @Override
     protected void onHandleIntent(Intent workIntent){
 
-        //        if (checkPlayServices()) {
-        // Building the GoogleApi client
-
         System.out.println("**********VINAY Inside onHandleIntent ");
         buildGoogleApiClient();
-
-//        }
 
         if (mGoogleApiClient != null) {
             mGoogleApiClient.connect();
         }
-
-//        displayLocation();
-//
-//        System.out.println("**********VINAY GetMyLocation outside displayLocation() Response "+latitude+" , "+longitude);
-//
-//        Intent localIntent = new Intent();
-//        localIntent.setAction(ResponseReceiver.PROCESS_RESPONSE);
-//        localIntent.addCategory(Intent.CATEGORY_DEFAULT);
-//        localIntent.putExtra(LATITUDE, latitude);
-//        localIntent.putExtra(LONGITUDE, longitude);
-//
-//        LocalBroadcastManager.getInstance(this).sendBroadcast(localIntent);
-
     }
 
     @Override
@@ -71,7 +50,6 @@ public class GetLocationService extends IntentService implements GoogleApiClient
 
     @Override
     public void onConnected(Bundle arg0) {
-
         // Once connected with google api, get the location
         displayLocation();
         System.out.println("**********VINAY GetMyLocation displayLocation() Response "+latitude+" , "+longitude);
@@ -91,24 +69,6 @@ public class GetLocationService extends IntentService implements GoogleApiClient
         mGoogleApiClient.connect();
     }
 
-//    private boolean checkPlayServices() {
-//        int resultCode = GooglePlayServicesUtil
-//                .isGooglePlayServicesAvailable(this);
-//        if (resultCode != ConnectionResult.SUCCESS) {
-//            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
-//                GooglePlayServicesUtil.getErrorDialog(resultCode, this,
-//                        PLAY_SERVICES_RESOLUTION_REQUEST).show();
-//            } else {
-//                Toast.makeText(getApplicationContext(),
-//                        "This device is not supported.", Toast.LENGTH_LONG)
-//                        .show();
-//                //finish();
-//            }
-//            return false;
-//        }
-//        return true;
-//    }
-
     protected synchronized void buildGoogleApiClient() {
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
@@ -117,23 +77,19 @@ public class GetLocationService extends IntentService implements GoogleApiClient
     }
 
     private void displayLocation() {
-
-        mLastLocation = LocationServices.FusedLocationApi
-                .getLastLocation(mGoogleApiClient);
-
+        try {
+            mLastLocation = LocationServices.FusedLocationApi
+                    .getLastLocation(mGoogleApiClient);
+        }catch(SecurityException e){
+            e.printStackTrace();
+        }
         if (mLastLocation != null) {
             latitude = mLastLocation.getLatitude();
             longitude = mLastLocation.getLongitude();
-
             System.out.println("*****GetMyLocation displayLocation() Response "+latitude+" , "+longitude);
-
-          //  lblLocation.setText(latitude + ", " + longitude);
-
         } else {
             latitude = 0;
             longitude = 0;
-
-           // lblLocation.setText("(Couldn't get the location. Make sure location is enabled on the device)");
         }
     }
 }
