@@ -52,6 +52,32 @@ public class BuildingDetailFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(savedInstanceState != null) {
+            System.out.println("Inside savedInstanceState not null");
+            buildingName = savedInstanceState.getString("buildingname");
+            baddress = savedInstanceState.getString("buildingaddress");
+            buildingAddress = savedInstanceState.getString("buildingaddress");
+            blatitude = savedInstanceState.getDouble("blatitude");
+            blongitude = savedInstanceState.getDouble("blongitude");
+            buildingImage = savedInstanceState.getString("image");
+            ulatitude = savedInstanceState.getDouble("ulatitude");
+            ulongitude = savedInstanceState.getDouble("ulongitude");
+
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState){
+        System.out.println("inside onSaveInstanceState building details ");
+        super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putString("buildingname", buildingName);
+        savedInstanceState.putString("buildingaddress", buildingAddress);
+        savedInstanceState.putDouble("blatitude", blatitude);
+        savedInstanceState.putDouble("blongitude",blongitude);
+        savedInstanceState.putDouble("ulatitude", ulatitude);
+        savedInstanceState.putDouble("ulongitude",ulongitude);
+        savedInstanceState.putString("image", buildingImage);
+
     }
 
     @Override

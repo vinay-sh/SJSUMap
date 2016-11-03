@@ -40,7 +40,7 @@
 
         <activity android:name=".StreetViewActivity">
             <meta-data android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MapViewActivity"/>
+                android:value=".BuildingDetailActivity"/>
         </activity>
         <service
             android:name=".GetLocationService"
