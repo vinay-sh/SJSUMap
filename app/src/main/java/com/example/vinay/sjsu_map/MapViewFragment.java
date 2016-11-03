@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -19,6 +20,7 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.SearchView;
@@ -56,6 +58,15 @@ public class MapViewFragment extends Fragment implements LocationListener{
     private static double ulongitude=0;
     private ResponseReceiver receiver;
     private Button fetchuserloc;
+    private static final String[] INITIAL_PERMS={
+            android.Manifest.permission.ACCESS_FINE_LOCATION,
+            android.Manifest.permission.READ_CONTACTS
+    };
+    private static final String[] LOCATION_PERMS={
+            android.Manifest.permission.ACCESS_FINE_LOCATION
+    };
+    private static final int INITIAL_REQUEST=1337;
+    private static final int LOCATION_REQUEST=INITIAL_REQUEST+3;
 
     // private OnFragmentInteractionListener mListener;
 
@@ -67,6 +78,16 @@ public class MapViewFragment extends Fragment implements LocationListener{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         System.out.println("I AM INSIDE CREATE MAP VIEW FRAGMENT");
+        if (!canAccessLocation()) {
+            requestPermissions(INITIAL_PERMS, INITIAL_REQUEST);
+        }
+    }
+
+    private boolean canAccessLocation() {
+        return(hasPermission(android.Manifest.permission.ACCESS_FINE_LOCATION));
+    }
+    private boolean hasPermission(String perm) {
+        return(PackageManager.PERMISSION_GRANTED== ContextCompat.checkSelfPermission(getActivity(),perm));
     }
 
     @Override
@@ -118,9 +139,13 @@ public class MapViewFragment extends Fragment implements LocationListener{
             public void onProviderDisabled(String provider) {}
         };
 
-        // Register the listener with the Location Manager to receive location updates
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+        try {
+            // Register the listener with the Location Manager to receive location updates
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+        } catch(SecurityException e){
+            e.printStackTrace();
+        }
 
 
         fetchuserloc = (Button)v.findViewById(R.id.fetchuser);
